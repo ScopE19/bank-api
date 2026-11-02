@@ -1,0 +1,5 @@
+spring:
+  jpa:
+    show-sql: true
+  datasource:
+    password: unused-testcontainers-provides-the-connection
