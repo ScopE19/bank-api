@@ -1,4 +1,4 @@
-package scope.dev.bank.account;
+package scope.dev.bank.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

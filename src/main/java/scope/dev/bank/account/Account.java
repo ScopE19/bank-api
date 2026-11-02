@@ -1,17 +1,27 @@
 package scope.dev.bank.account;
 
+import jakarta.persistence.*;
 import scope.dev.bank.common.Money;
 
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
-
+@Entity
+@Table(name = "account")
 public class Account {
-
+    @Id
     private UUID id;
+    @Column(name = "owner_id", nullable = false, updatable = false)
     private UUID ownerId;
+    @Column(name = "account_number", nullable = false, updatable = false, unique = true)
     private String accountNumber;
+    @Column(nullable = false)
     private Money balance;
+
+    @Version
+    private Long version;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     protected Account() {
@@ -68,4 +78,6 @@ public class Account {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public Long getVersion() { return version; }
 }
