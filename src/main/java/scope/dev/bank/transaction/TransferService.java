@@ -7,7 +7,7 @@ import scope.dev.bank.account.AccountNotFoundException;
 import scope.dev.bank.account.AccountRepository;
 import scope.dev.bank.common.Money;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TransferService {
@@ -26,15 +26,27 @@ public class TransferService {
             throw new InvalidTransferException("Cannot transfer to the same account");
 
         }
-        Account source = accounts.findByAccountNumber(fromNumber)
-                .filter(account -> account.isOwnedBy(userId))
-                .orElseThrow(() -> new AccountNotFoundException(fromNumber));
-        Account target = accounts.findByAccountNumber(toNumber)
-                .orElseThrow(() -> new AccountNotFoundException(toNumber));
+
+        Map<String, Account> locked = lockInOrder(fromNumber, toNumber);
+        Account source = locked.get(fromNumber);
+        Account target = locked.get(toNumber);
+
+        if (!source.isOwnedBy(userId)) {
+            throw new AccountNotFoundException(fromNumber);
+        }
 
         source.withdraw(amount);
         target.deposit(amount);
 
         return transactions.save(MoneyTransaction.transfer(source.getId(), target.getId(), amount, userId));
+    }
+
+    private Map<String, Account> lockInOrder(String... accountNumbers) {
+        Map<String, Account> result = new HashMap<>();
+        for (String number : new TreeSet<>(Arrays.asList(accountNumbers))) {
+            result.put(number, accounts.findByAccountNumberForUpdate(number)
+                    .orElseThrow(() -> new AccountNotFoundException(number)));
+        }
+        return result;
     }
 }

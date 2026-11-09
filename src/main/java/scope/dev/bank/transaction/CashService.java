@@ -35,7 +35,7 @@ public class CashService {
     }
 
     private Account loadOwned(UUID userId, String accountNumber) {
-        return accounts.findByAccountNumber(accountNumber)
+        return accounts.findByAccountNumberForUpdate(accountNumber)
                 .filter(account -> account.isOwnedBy(userId))
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
     }
