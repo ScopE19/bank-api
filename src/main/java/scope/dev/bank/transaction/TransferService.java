@@ -15,17 +15,16 @@ public class TransferService {
     private final AccountRepository accounts;
     private final MoneyTransactionRepository transactions;
 
-    public TransferService(AccountRepository accounts, MoneyTransactionRepository transactions) {
+    private final List<TransferRule> rules;
+
+    public TransferService(AccountRepository accounts, MoneyTransactionRepository transactions, List<TransferRule> rules) {
         this.accounts = accounts;
         this.transactions = transactions;
+        this.rules = rules;
     }
 
     @Transactional
     public MoneyTransaction transfer(UUID userId, String fromNumber, String toNumber, Money amount) {
-        if (fromNumber.equals(toNumber)) {
-            throw new InvalidTransferException("Cannot transfer to the same account");
-
-        }
 
         Map<String, Account> locked = lockInOrder(fromNumber, toNumber);
         Account source = locked.get(fromNumber);
@@ -34,6 +33,7 @@ public class TransferService {
         if (!source.isOwnedBy(userId)) {
             throw new AccountNotFoundException(fromNumber);
         }
+        rules.forEach(rule -> rule.check(source, target, amount));
 
         source.withdraw(amount);
         target.deposit(amount);
