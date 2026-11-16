@@ -2,8 +2,8 @@ package scope.dev.bank.user;
 
 import java.util.UUID;
 
-public record UserResponce(UUID id, String email, String fullName) {
-    public static UserResponce from(User user) {
-        
+public record UserResponse(UUID id, String email, String fullName) {
+    public static UserResponse from(User user) {
+        return new UserResponse(user.getId(), user.getEmail(), user.getFullName());
     }
 }

@@ -1,7 +1,9 @@
 package scope.dev.bank.user;
 
-public class DuplicateEmailException extends RuntimeException {
-  public DuplicateEmailException(String message) {
-    super(message);
-  }
+import scope.dev.bank.common.DomainException;
+
+public class DuplicateEmailException extends DomainException {
+    public DuplicateEmailException() {
+        super("Email is already registered.");
+    }
 }
