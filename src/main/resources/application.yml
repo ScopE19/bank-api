@@ -21,3 +21,7 @@ management:
 app:
   transfer:
     max-amount: 10000.00
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: bank-api
+    access-token-ttl: 15m
