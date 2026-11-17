@@ -3,8 +3,10 @@ package scope.dev.bank.user;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import scope.dev.bank.auth.InvalidCredentialsException;
 
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -23,6 +25,11 @@ public class UserService {
             throw new DuplicateEmailException();
         }
         return users.save(new User(normalizedEmail, passwordEncoder.encode(rawPassword), fullName));
+    }
+
+    @Transactional(readOnly = true)
+    public User getById(UUID id) {
+        return users.findById(id).orElseThrow(InvalidCredentialsException::new);
     }
 
     public static String normalize(String email) {

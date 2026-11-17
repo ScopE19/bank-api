@@ -1,7 +1,9 @@
 package scope.dev.bank.auth;
 
-public class InvalidCredentialsException extends RuntimeException {
-  public InvalidCredentialsException(String message) {
-    super(message);
-  }
+import scope.dev.bank.common.DomainException;
+
+public class InvalidCredentialsException extends DomainException {
+    public InvalidCredentialsException() {
+        super("Invalid email or password");
+    }
 }
