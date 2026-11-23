@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import scope.dev.bank.account.AccountNotFoundException;
 import scope.dev.bank.account.InsufficientFundsException;
 import scope.dev.bank.account.InvalidAmountException;
+import scope.dev.bank.auth.InvalidCredentialsException;
 import scope.dev.bank.transaction.InvalidTransferException;
 import scope.dev.bank.user.DuplicateEmailException;
 
@@ -42,6 +43,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     ProblemDetail dataConflict(DataIntegrityViolationException ex) {
         return problem(HttpStatus.CONFLICT, "Conflict", "The request conflicts with existing data");
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    ProblemDetail invalidCredentials(InvalidCredentialsException ex) {
+        return problem(HttpStatus.UNAUTHORIZED, "Unauthorized", ex.getMessage());
     }
 
     @Override

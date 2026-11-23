@@ -3,3 +3,7 @@ spring:
     show-sql: true
   datasource:
     password: unused-testcontainers-provides-the-connection
+
+  app:
+    jwt:
+      secret: test-only-secret-that-is-at-least-32-characters-long
