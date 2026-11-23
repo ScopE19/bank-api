@@ -1,0 +1,39 @@
+### Register
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{ "email": "alice@example.com", "password": "correct-horse-battery", "fullName": "Alice" }
+
+### Login (stores the token in a variable for the requests below)
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{ "email": "alice@example.com", "password": "correct-horse-battery" }
+
+> {% client.global.set("token", response.body.accessToken); %}
+
+### Open account
+POST http://localhost:8080/api/v1/accounts
+Authorization: Bearer {{token}}
+
+### List accounts
+GET http://localhost:8080/api/v1/accounts
+Authorization: Bearer {{token}}
+
+### Deposit (replace the account number)
+POST http://localhost:8080/api/v1/accounts/000000000000/deposits
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "amount": 250.00 }
+
+### Transfer
+POST http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "fromAccountNumber": "000000000000", "toAccountNumber": "111111111111", "amount": 40.00 }
+
+### History
+GET http://localhost:8080/api/v1/accounts/000000000000/transactions?page=0&size=20
+Authorization: Bearer {{token}}
